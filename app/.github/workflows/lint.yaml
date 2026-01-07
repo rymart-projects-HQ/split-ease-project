@@ -1,6 +1,9 @@
 name: Node.js CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -8,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: use node.js
+      - uses: actions/checkout@v4
+      - name: use node.js
 
-      uses: actions/setup-node@v4
-      with: 
-        node-version: 20.x
-    - run: npm ci
-    - run: npm run lint
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: npm ci
+      - run: npm run lint
