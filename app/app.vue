@@ -3,7 +3,11 @@ import "~/assets/main.css";
 </script>
 
 <template>
-  <NuxtLayout>
+  <div>
+    <NuxtRouteAnnouncer />
+    <NuxtWelcome />
+  </div>
+  <!-- <NuxtLayout>
     <NuxtPage />
-  </NuxtLayout>
+  </NuxtLayout> -->
 </template>
