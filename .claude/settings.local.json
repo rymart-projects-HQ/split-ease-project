@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(xargs cat:*)",
+      "Bash(npm run lint:fix:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
