@@ -1,0 +1,7 @@
+# Ensures Git tracks empty directories
+find app/components -type d -empty -exec touch {}/.gitkeep \;
+find app/composables -type d -empty -exec touch {}/.gitkeep \;
+find app/layouts -type d -empty -exec touch {}/.gitkeep \;
+find app/pages -type d -empty -exec touch {}/.gitkeep \;
+find app/types -type d -empty -exec touch {}/.gitkeep \;
+find app/utils -type d -empty -exec touch {}/.gitkeep \;
