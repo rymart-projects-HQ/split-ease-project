@@ -27,6 +27,9 @@
     "typescript": "^5.9.3"
   },
   "lint-staged": {
-    "*": "npm run lint"
+    "*": [
+      "npm run lint",
+      "npm run lint:fix"
+    ]
   }
 }
