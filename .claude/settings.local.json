@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(xargs cat:*)",
-      "Bash(npm run lint:fix:*)"
+      "Bash(npm run lint:fix:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
