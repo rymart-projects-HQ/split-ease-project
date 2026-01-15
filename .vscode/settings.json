@@ -3,6 +3,9 @@
   "prettier.enable": false,
   "editor.formatOnSave": false,
 
+  // Tailwind CSS v4 uses custom at-rules like @theme, @plugin
+  "css.lint.unknownAtRules": "ignore",
+
   // Auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
