@@ -12,3 +12,23 @@ body,
   background-color: #fff;
   font-family: "DM Sans", sans-serif;
 }
+
+:root {
+  /* light mode */
+  --primary: #10b981;
+  --background: #fafafa;
+  --text-color: #252525;
+  --destructive: #ef4444;
+  --secondary: #f3f4f6;
+}
+
+.dark {
+  /* dark mode */
+  --primary: #10b981;
+  --background: #252525;
+  --text-color: #fafafa;
+  --card: #252525;
+  --secondary: #444444;
+  --muted: #444;
+  --border: #444;
+}
