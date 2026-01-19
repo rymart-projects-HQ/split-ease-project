@@ -9,10 +9,10 @@ definePageMeta({
 <template>
   <div class="login-main relative">
     <div class="hero bg-base-200 min-h-screen">
-      <div class="flex justify-end absolute top-20 right-40 p-5 bg-base-100 rounded-[20px]">
+      <div class="flex justify-end absolute top-5 right-5 lg:top-10 lg:right-20 p-4 md:p-5 bg-base-100 rounded-[20px] z-1">
         <AppThemeToggle />
       </div>
-      <div class="hero-content flex-col text-center w-full max-w-[600px] mx-auto px-4">
+      <div class="hero-content flex-col text-center w-full max-w-[480px] mx-auto px-4">
         <div class="header flex flex-col gap-2 pb-5">
           <div class="splitease-logo mx-auto flex justify-center">
             <img
@@ -28,9 +28,9 @@ definePageMeta({
             Split expenses seamlessly with your group
           </p>
         </div>
-        <div class="w-full bg-base-100 rounded-[20px] border border-gray-100/20 flex flex-col gap-10 py-10">
+        <div class="w-full bg-base-100 rounded-[20px] border border-gray-100/20 flex flex-col gap-8 p-10">
           <div class="card w-full max-w-md mx-auto flex flex-col gap-3">
-            <button class="btn btn-xs border border-gray-600 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl rounded-[10px] text-[16px]">
+            <button class="btn btn-md border border-gray-600 lg:btn-lg xl:btn-xl rounded-[10px] text-[16px]">
               <img
                 src="/login/google-icon.svg"
                 alt="Google icon"

@@ -15,6 +15,16 @@ body,
   overflow-x: hidden;
   background-color: #fff;
   font-family: "DM Sans", sans-serif;
+
+  /* Hide scrollbar for Chrome, Safari, Opera, Brave */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#__nuxt::-webkit-scrollbar {
+  display: none;
 }
 
 :root {

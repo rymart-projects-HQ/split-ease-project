@@ -22,12 +22,12 @@ const isDark = computed({
     >
     <Icon
       class="swap-off text-black"
-      size="24"
+      size="20"
       name="tabler:sun"
     />
     <Icon
       class="swap-on text-white"
-      size="24"
+      size="20"
       name="tabler:moon-filled"
     />
   </label>
