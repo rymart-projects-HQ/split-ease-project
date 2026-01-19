@@ -28,9 +28,9 @@ Split Ease aims to simplify expense management and bill splitting among groups o
 
 ### Current Status
 
-- **Complete**: Development infrastructure, linting, CI/CD, project scaffolding
-- **In Progress**: Core application development
-- **Pending**: Feature implementation, database integration, API development
+- **Complete**: Development infrastructure, linting, CI/CD, project scaffolding, database setup (Prisma + PostgreSQL), Tailwind CSS + DaisyUI integration, routing enabled
+- **In Progress**: Core application development, UI components
+- **Pending**: Feature implementation, authentication, full API development
 
 ---
 
@@ -56,6 +56,17 @@ Split Ease aims to simplify expense management and bill splitting among groups o
   - **@antfu/eslint-config 6.7.3** - Opinionated, comprehensive ESLint rules
   - **eslint-plugin-format 1.2.0** - Additional formatting rules
   - **@nuxt/eslint 1.12.1** - Nuxt-specific integrations
+- **tsx 4.21.0** - TypeScript execution engine
+- **dotenv 17.2.3** - Environment variable management
+
+### Database & ORM
+
+- **Prisma 6.19.2** - Modern TypeScript ORM
+  - **@prisma/client 6.19.2** - Auto-generated type-safe database client
+  - **PostgreSQL** - Database provider (configured via DATABASE_URL)
+  - **pg 8.17.0** - PostgreSQL client for Node.js
+  - **@types/pg 8.16.0** - TypeScript definitions for pg
+- **Initial Schema**: User model with email, name, timestamps
 
 ### Code Quality Tools
 
@@ -64,8 +75,11 @@ Split Ease aims to simplify expense management and bill splitting among groups o
 
 ### Styling
 
+- **Tailwind CSS 4.1.18** - Utility-first CSS framework
+  - **@tailwindcss/vite 4.1.18** - Vite plugin integration
+  - **DaisyUI 5.5.14** - Tailwind CSS component library
 - **DM Sans** - Google Fonts typeface (variable font with weights 100-1000)
-- Custom CSS with global styles
+- Global CSS with Tailwind directives
 
 ---
 
@@ -88,30 +102,54 @@ pre-commit                    # Pre-commit hook (runs lint-staged)
 tsconfig.*.json               # TypeScript configs for app/server/node
 ...                           # Build cache and generated files
 .vscode/                          # VS Code workspace settings
-settings.json                 # ESLint integration for IDE
+settings.json                 # ESLint & editor integration
+extension.json                # Recommended VS Code extensions
 
 app/                              # Main application directory
 assets/
-   main.css                  # Global styles and fonts
-components/                   # Vue components (currently empty)
-composables/                  # Vue composables for shared logic (empty)
-   layouts/
-   app.vue                   # Default app layout (empty)
-   pages/
+   css/
+      main.css               # Global styles with Tailwind directives
+components/                   # Vue components (with README)
+composables/                  # Vue composables for shared logic (with README)
+layouts/
+   app.vue                   # Default app layout (with DaisyUI example)
+   README.md                 # Layouts documentation
+pages/
+   index.vue                 # Home page (with sample content)
    login/
-   index.vue             # Login page (empty)
-types/                        # TypeScript type definitions (empty)
-utils/                        # Utility functions (empty)
-app.vue                       # Root Vue component
+      index.vue              # Login page (awaiting implementation)
+   README.md                 # Pages documentation
+types/                        # TypeScript type definitions (with README)
+utils/                        # Utility functions (with README)
+app.config.ts                 # App-level configuration
+app.vue                       # Root Vue component (routing enabled)
+error.vue                     # Error page component
+README.md                     # App directory documentation
+
+prisma/                           # Prisma ORM configuration
+migrations/
+   20260114235443_init/      # Initial migration
+      migration.sql          # User table creation SQL
+   migration_lock.toml       # Migration lock file
+schema.prisma                 # Database schema definition
 
 public/                           # Static assets served at root
 favicon.ico                   # Site favicon
 robots.txt                    # Search engine directives
-test/                             # Test directory
+
+server/                           # Server-side code
 api/
-utils/                    # API test utilities (empty)
-setup.ts                      # Test setup configuration (empty)
+   health.get.ts             # Health check endpoint
+utils/
+   prisma.ts                 # Prisma client singleton
+README.md                     # Server documentation
+
+test/                             # Test directory
+setup.ts                      # Test setup configuration
+README.md                     # Test documentation
+
 .gitignore                        # Git ignore rules
+.gitkeep                          # Keep empty directories
 eslint.config.mjs                 # ESLint configuration
 nuxt.config.ts                    # Nuxt application configuration
 package.json                      # Dependencies and npm scripts
@@ -126,13 +164,32 @@ tsconfig.json                     # TypeScript configuration
 
 Nuxt 4 uses the `app/` directory as the main source folder:
 
-- **assets/** - Global CSS, images, fonts (processed by build tools)
+- **assets/css/** - Global CSS with Tailwind directives and custom styles
 - **components/** - Auto-imported Vue components
 - **composables/** - Auto-imported composable functions
 - **layouts/** - Page layout wrappers
 - **pages/** - File-based routing (each file = route)
 - **types/** - TypeScript type definitions
 - **utils/** - Auto-imported utility functions
+- **app.config.ts** - Application-level configuration (runtime)
+- **app.vue** - Root component with routing enabled
+- **error.vue** - Error handling component
+
+#### `/server` Directory
+
+Server-side code for API routes and utilities:
+
+- **api/** - API endpoints (auto-mapped to routes)
+- **utils/** - Server-only utilities (auto-imported)
+- Server utilities include Prisma client singleton
+
+#### `/prisma` Directory
+
+Database configuration and migrations:
+
+- **schema.prisma** - Database schema definition
+- **migrations/** - Version-controlled database migrations
+- PostgreSQL configured as the database provider
 
 #### `/public` Directory
 
@@ -162,6 +219,12 @@ export default defineNuxtConfig({
       standalone: false, // Use project ESLint config
     },
   },
+  vite: {
+    plugins: [
+      tailwindcss(), // Tailwind CSS v4 Vite plugin
+    ],
+  },
+  css: ["~/assets/css/main.css"], // Global CSS imports
 });
 ```
 
@@ -169,6 +232,8 @@ export default defineNuxtConfig({
 
 - Development tools enabled for debugging
 - ESLint module integrated for in-IDE linting
+- Tailwind CSS configured via Vite plugin
+- Global CSS imported for Tailwind directives
 - Compatibility date set for predictable behavior
 
 #### `eslint.config.mjs`
@@ -189,16 +254,21 @@ export default defineNuxtConfig({
   - Max 2 attributes per line (single-line)
   - Max 1 attribute per line (multi-line)
 - **File Naming**:
-  - Enforced kebab-case (e.g., `user-profile.vue`)
+  - Enforced kebab-case, camelCase, or PascalCase
   - Exception: `README.md`
 - **Imports**:
   - Auto-sorted by `perfectionist/sort-imports`
 - **Environment**:
   - `process.env` usage prohibited (use runtime config)
   - Console warnings enabled
+  - Top-level await allowed
+  - Global process allowed
 - **Ignored Paths**:
   - `.npm-store/**`
   - `**/migrations/*`
+  - `.claude/**`
+- **Special Rules**:
+  - `server/utils/prisma.ts` - allows `var` for global singleton pattern
 
 #### `package.json`
 
@@ -222,12 +292,20 @@ npm run lint:fix    # Run ESLint with auto-fix
 - `vue` - Reactive UI library
 - `vue-router` - Routing
 - `@nuxt/eslint` - Linting integration
+- `@prisma/client` - Prisma database client
+- `@tailwindcss/vite` - Tailwind CSS v4 Vite plugin
+- `tailwindcss` - Utility-first CSS framework
 
 **Dev Dependencies**:
 
 - `typescript` - Type checking
 - `eslint` + `@antfu/eslint-config` - Code quality
 - `husky` + `lint-staged` - Git hooks
+- `prisma` - Prisma CLI and schema tools
+- `daisyui` - Tailwind CSS component library
+- `pg` + `@types/pg` - PostgreSQL client
+- `tsx` - TypeScript execution
+- `dotenv` - Environment variables
 
 **Lint-staged Configuration**:
 
@@ -261,31 +339,33 @@ References auto-generated Nuxt TypeScript configs:
 **Purpose**: Root Vue component
 
 ```vue
-<script setup>
-import "~/assets/main.css";
+<script setup lang="ts">
+import "~/assets/css/main.css";
 </script>
 
 <template>
-  <div>
-    <NuxtRouteAnnouncer />  <!-- Accessibility: announces route changes -->
-    <NuxtWelcome />          <!-- Nuxt welcome page (temporary) -->
-  </div>
-  <!-- <NuxtLayout>             Future: Enable when layouts are ready
+  <NuxtLayout>
     <NuxtPage />
-  </NuxtLayout> -->
+  </NuxtLayout>
 </template>
 ```
 
-**Current State**: Displays Nuxt welcome page
-**Next Step**: Uncomment `<NuxtLayout>` and `<NuxtPage>` to activate routing
+**Current State**: Routing is now enabled, using NuxtLayout and NuxtPage
+**Features**:
+- Imports global CSS with Tailwind directives
+- Enables file-based routing
+- Uses default layout system
 
-#### `app/assets/main.css`
+#### `app/assets/css/main.css`
 
-**Location**: `app/assets/main.css:1`
-**Purpose**: Global styles
+**Location**: `app/assets/css/main.css:1`
+**Purpose**: Global styles with Tailwind CSS
 
 ```css
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:...");
+
+@import "tailwindcss";
+@plugin "daisyui";
 
 html,
 body,
@@ -301,25 +381,182 @@ body,
 **Features**:
 
 - DM Sans variable font (Google Fonts)
+- Tailwind CSS v4 imports
+- DaisyUI component library plugin
 - Full-height layout
 - Horizontal overflow hidden
 - White background
+
+#### `app/pages/index.vue`
+
+**Location**: `app/pages/index.vue:1`
+**Purpose**: Home page route
+**Route**: `/`
+
+```vue
+<script setup lang="ts">
+definePageMeta({
+  layout: "app",
+});
+</script>
+
+<template>
+  <div>
+    <h1 class="text-2xl font-semibold">
+      Sample Page
+    </h1>
+    <p class="mt-2 text-white/60">
+      Welcome to Nuxt 4!
+    </p>
+  </div>
+</template>
+```
+
+**Features**:
+- Uses "app" layout
+- Demonstrates Tailwind CSS utility classes
+- Sample content for testing
 
 #### `app/pages/login/index.vue`
 
 **Location**: `app/pages/login/index.vue:1`
 **Purpose**: Login page route
+**Route**: `/login`
 **Status**: Empty file - awaiting implementation
-
-When Nuxt routing is enabled, this will be accessible at `/login`.
 
 #### `app/layouts/app.vue`
 
 **Location**: `app/layouts/app.vue:1`
 **Purpose**: Default application layout
-**Status**: Empty file - awaiting implementation
 
-Will wrap all pages when routing is activated.
+```vue
+<script setup lang="ts">
+</script>
+
+<template>
+  <div>
+    <h1 class="text-3xl font-bold underline text-black">
+      Sample Texts
+      <button class="btn btn-accent">
+        Accent
+      </button>
+    </h1>
+  </div>
+</template>
+```
+
+**Features**:
+- Demonstrates Tailwind CSS utility classes
+- Shows DaisyUI button component
+- Wraps all pages using this layout
+
+#### `app/error.vue`
+
+**Location**: `app/error.vue:1`
+**Purpose**: Global error handling component
+
+**Status**: Empty template - ready for custom error page implementation
+
+### Database & Server Files
+
+#### `prisma/schema.prisma`
+
+**Location**: `prisma/schema.prisma:1`
+**Purpose**: Database schema definition
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+**Features**:
+- PostgreSQL database provider
+- Auto-generated Prisma Client
+- User model with basic fields
+- Email uniqueness constraint
+- Automatic timestamps
+
+**Initial Migration**: `20260114235443_init`
+- Creates User table
+- Sets up primary key and unique constraints
+
+#### `server/utils/prisma.ts`
+
+**Location**: `server/utils/prisma.ts:1`
+**Purpose**: Prisma Client singleton for server-side use
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+
+declare global {
+  var prismaGlobal: PrismaClient | undefined;
+}
+
+function prismaClientSingleton() {
+  return new PrismaClient();
+}
+
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prismaGlobal = prisma;
+}
+
+export default prisma;
+```
+
+**Features**:
+- Singleton pattern prevents multiple instances
+- Development mode caching via global variable
+- Auto-imported in server context
+- Type-safe database access
+
+#### `server/api/health.get.ts`
+
+**Location**: `server/api/health.get.ts:1`
+**Purpose**: Health check API endpoint
+**Route**: `GET /api/health`
+
+```typescript
+export default defineEventHandler(async () => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+
+    return {
+      status: "ok",
+      database: "connected",
+      timestamp: new Date().toISOString(),
+    };
+  }
+  catch (error) {
+    return {
+      status: "error",
+      database: "failed",
+      message: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+});
+```
+
+**Features**:
+- Tests database connectivity
+- Returns JSON status response
+- Error handling with informative messages
+- Demonstrates Prisma usage in API routes
 
 ### CI/CD Configuration
 
@@ -374,6 +611,7 @@ Runs `lint-staged` before every commit, which executes `npm run lint` on staged 
 - Logs (`*.log`)
 - Environment files (`.env`, `.env.*`)
 - Editor files (`.DS_Store`, `.idea`)
+- Generated Prisma files (`/app/generated/prisma`)
 
 ---
 
@@ -386,6 +624,7 @@ Runs `lint-staged` before every commit, which executes `npm run lint` on staged 
 - Node.js v24.12.0 or higher (recommended)
 - npm, pnpm, yarn, or bun package manager
 - Git for version control
+- PostgreSQL database (local or remote)
 
 #### Initial Setup
 
@@ -406,8 +645,28 @@ Runs `lint-staged` before every commit, which executes `npm run lint` on staged 
    - Install all dependencies from `package.json`
    - Run `nuxt prepare` (postinstall hook)
    - Setup Husky git hooks
+   - Generate Prisma Client
 
-3. **Start development server**:
+3. **Setup environment variables**:
+
+   Create a `.env` file in the root directory:
+
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/split_ease"
+   ```
+
+4. **Run database migrations**:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+   This will:
+   - Apply all pending migrations
+   - Generate Prisma Client
+   - Sync your database schema
+
+5. **Start development server**:
 
    ```bash
    npm run dev
@@ -417,6 +676,7 @@ Runs `lint-staged` before every commit, which executes `npm run lint` on staged 
    - Hot module replacement (HMR) enabled
    - TypeScript checking active
    - ESLint running in watch mode
+   - API available at `http://localhost:3000/api/*`
 
 ### Development Workflow
 
@@ -459,7 +719,7 @@ CI pipeline will run linting on pull request.
 
 ### File-Based Routing
 
-When routing is enabled (uncomment in `app.vue:10`):
+Routing is now enabled in the application.
 
 **Example Routes**:
 
@@ -565,6 +825,155 @@ const config = useRuntimeConfig();
 ```
 
 **Do NOT use `process.env`** - ESLint will error (rule: `node/no-process-env`)
+
+### Working with Prisma
+
+#### Database Schema Changes
+
+1. **Modify the schema**:
+
+   Edit `prisma/schema.prisma` to add or modify models:
+
+   ```prisma
+   model Expense {
+     id        Int      @id @default(autoincrement())
+     amount    Decimal
+     description String
+     userId    Int
+     user      User     @relation(fields: [userId], references: [id])
+     createdAt DateTime @default(now())
+   }
+   ```
+
+2. **Create a migration**:
+
+   ```bash
+   npx prisma migrate dev --name add_expense_model
+   ```
+
+   This will:
+   - Generate migration SQL
+   - Apply migration to database
+   - Regenerate Prisma Client with new types
+
+3. **View database in Prisma Studio**:
+
+   ```bash
+   npx prisma studio
+   ```
+
+   Opens a GUI at `http://localhost:5555` to view and edit data
+
+#### Using Prisma in Server Routes
+
+```typescript
+// server/api/users.get.ts
+export default defineEventHandler(async () => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      name: true,
+    },
+  });
+
+  return users;
+});
+
+// server/api/users.post.ts
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+
+  const user = await prisma.user.create({
+    data: {
+      email: body.email,
+      name: body.name,
+    },
+  });
+
+  return user;
+});
+```
+
+**Important**: Prisma is auto-imported in server context via `server/utils/prisma.ts`
+
+#### Common Prisma Commands
+
+```bash
+npx prisma generate        # Regenerate Prisma Client
+npx prisma migrate dev     # Create and apply migration
+npx prisma migrate reset   # Reset database (WARNING: deletes all data)
+npx prisma studio          # Open database GUI
+npx prisma db push         # Push schema changes without migration (dev only)
+```
+
+### Working with Tailwind CSS & DaisyUI
+
+#### Using Tailwind Utility Classes
+
+```vue
+<template>
+  <div class="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
+    <h1 class="text-2xl font-bold text-gray-900">
+      Hello World
+    </h1>
+    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      Click Me
+    </button>
+  </div>
+</template>
+```
+
+#### Using DaisyUI Components
+
+DaisyUI provides pre-built component classes:
+
+```vue
+<template>
+  <div>
+    <!-- Buttons -->
+    <button class="btn">Normal</button>
+    <button class="btn btn-primary">Primary</button>
+    <button class="btn btn-accent">Accent</button>
+
+    <!-- Cards -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Card Title</h2>
+        <p>Card content here</p>
+        <div class="card-actions justify-end">
+          <button class="btn btn-primary">Action</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <dialog class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Modal Title</h3>
+        <p class="py-4">Modal content</p>
+      </div>
+    </dialog>
+  </div>
+</template>
+```
+
+**DaisyUI Documentation**: [https://daisyui.com/components/](https://daisyui.com/components/)
+
+#### Custom Styles
+
+Add custom CSS in `app/assets/css/main.css`:
+
+```css
+/* After Tailwind imports */
+.custom-button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded;
+}
+
+.custom-button:hover {
+  @apply bg-blue-600;
+}
+```
 
 ---
 
@@ -722,72 +1131,102 @@ npm run lint:fix
 
 2. **Project Structure**:
    - Organized directory layout
-   - File-based routing setup (disabled)
-   - Layout system prepared
+   - File-based routing enabled
+   - Layout system active
    - Asset pipeline configured
 
 3. **Development Environment**:
    - Auto-imports for components/composables
    - Hot module replacement
    - TypeScript checking
-   - VS Code integration
+   - VS Code integration with recommended extensions
+
+4. **Database & ORM**:
+   - Prisma 6.19.2 configured with PostgreSQL
+   - Initial User model and migration
+   - Prisma Client singleton for server use
+   - Health check API endpoint
+
+5. **Styling Framework**:
+   - Tailwind CSS 4.1.18 integrated via Vite plugin
+   - DaisyUI 5.5.14 component library
+   - Custom global styles with DM Sans font
+   - Sample pages demonstrating styling
 
 ### What's Missing
 
 1. **Core Features**:
    - User authentication implementation
-   - Database integration
-   - API endpoints
+   - Full expense tracking functionality
+   - Group management features
+   - Payment reconciliation logic
    - State management (if needed)
-   - Component library
 
 2. **UI/UX**:
-   - Design system
-   - Styled components
-   - Responsive layouts
-   - Accessibility features
+   - Complete design system
+   - Production-ready components
+   - Responsive layouts for all pages
+   - Accessibility enhancements
+   - Loading states and error boundaries
 
 3. **Backend**:
-   - Database schema
-   - Server middleware
-   - API routes
-   - Authentication logic
+   - Complete database schema (expenses, groups, payments)
+   - Authentication middleware
+   - Full CRUD API routes
+   - Data validation and sanitization
+   - Authorization logic
 
 4. **Testing**:
    - Unit tests
    - Integration tests
    - E2E tests
-   - Test configuration
+   - Test configuration and setup
 
 ### Recommended Next Steps
 
-#### Phase 1: Foundation
+#### Phase 1: Authentication & User Management
 
-1. **Enable Routing**:
-   - Uncomment `<NuxtLayout>` and `<NuxtPage>` in `app/app.vue:10`
-   - Verify routing works with existing login page
+1. **Design System Refinement**:
+   - Define color palette using DaisyUI themes
+   - Create reusable component library
+   - Establish typography hierarchy
+   - Build common UI patterns (forms, cards, modals)
 
-2. **Design System**:
-   - Choose UI library (e.g., Nuxt UI, Vuetify, PrimeVue)
-   - Define color palette and typography
-   - Create basic component library
-
-3. **Authentication**:
+2. **Authentication**:
    - Implement login page UI (`app/pages/login/index.vue:1`)
-   - Set up authentication middleware
-   - Create protected routes
+   - Add registration page
+   - Set up authentication library (e.g., Nuxt Auth, Lucia)
+   - Create authentication middleware
+   - Implement protected routes
+   - Add password hashing (bcrypt/argon2)
+
+3. **User Profile**:
+   - Create user profile page
+   - Implement profile editing
+   - Add avatar upload functionality
 
 #### Phase 2: Core Features
 
-1. **Database Setup**:
-   - Choose database (PostgreSQL, MySQL, SQLite)
-   - Define schema for users, expenses, groups
-   - Set up ORM/query builder (Prisma, Drizzle, Kysely)
+1. **Database Schema Expansion**:
+   - Add Expense model with relations
+   - Add Group model for shared expenses
+   - Add GroupMember junction table
+   - Add Payment/Settlement model
+   - Create migrations for all models
 
-2. **API Development**:
-   - Create server API routes in `server/api/`
-   - Implement CRUD operations
-   - Add validation and error handling
+2. **Expense Management**:
+   - Create expense entry form
+   - Display expense lists with filtering
+   - Implement expense splitting logic
+   - Add expense categories
+   - Support for receipts/attachments
+
+3. **API Development**:
+   - Create CRUD endpoints for expenses
+   - Implement group management APIs
+   - Add payment/settlement APIs
+   - Implement proper validation with Zod/Valibot
+   - Add error handling and logging
 
 3. **State Management**:
    - Evaluate need for Pinia/global state
@@ -845,6 +1284,12 @@ npm run generate     # Static site generation
 npm run lint         # Check linting
 npm run lint:fix     # Auto-fix linting issues
 
+# Prisma/Database
+npx prisma studio         # Open database GUI
+npx prisma migrate dev    # Create and apply migration
+npx prisma generate       # Regenerate Prisma Client
+npx prisma db push        # Push schema without migration (dev)
+
 # Git
 git add .
 git commit -m "msg"  # Triggers pre-commit hook
@@ -854,10 +1299,14 @@ git push             # Triggers CI on PR
 ### Important Paths
 
 ```
-app/app.vue                    # Root component
-app/pages/                     # Routes (when enabled)
+app/app.vue                    # Root component (routing enabled)
+app/pages/                     # Routes (file-based routing)
 app/components/                # Auto-imported components
 app/composables/               # Auto-imported composables
+app/assets/css/main.css        # Global styles with Tailwind
+server/api/                    # API endpoints
+server/utils/prisma.ts         # Prisma client singleton
+prisma/schema.prisma           # Database schema
 nuxt.config.ts                 # Main configuration
 eslint.config.mjs              # Linting rules
 .github/workflows/ci.yaml      # CI pipeline
@@ -866,8 +1315,10 @@ eslint.config.mjs              # Linting rules
 ### Key Concepts
 
 - **Auto-imports**: No need to import components, composables, or utils
-- **File-based routing**: File structure = route structure
+- **File-based routing**: File structure = route structure (now enabled)
 - **TypeScript**: Fully integrated with auto-generated types
+- **Prisma ORM**: Type-safe database access with PostgreSQL
+- **Tailwind CSS**: Utility-first styling with DaisyUI components
 - **SSR**: Server-side rendering enabled by default
 - **Linting**: Enforced via git hooks and CI
 
@@ -880,16 +1331,29 @@ eslint.config.mjs              # Linting rules
 - [Nuxt 3 Documentation](https://nuxt.com/docs)
 - [Vue 3 Documentation](https://vuejs.org/guide/introduction.html)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [DaisyUI Components](https://daisyui.com/components/)
 - [@antfu/eslint-config](https://github.com/antfu/eslint-config)
 
 ### Community
 
 - [Nuxt Discord](https://discord.com/invite/nuxt)
 - [Vue Discord](https://discord.com/invite/vue)
+- [Prisma Discord](https://pris.ly/discord)
+
+### VS Code Extensions
+
+Recommended extensions (defined in `.vscode/extension.json`):
+- **ESLint** (dbaeumer.vscode.eslint) - Code linting
+- **Tailwind CSS IntelliSense** (bradlc.vscode-tailwindcss) - Tailwind autocomplete
+- **Vue - Official** (Vue.volar) - Vue 3 language support
 
 ---
 
-**Last Updated**: 2026-01-08
-**Project Version**: Early Development
+**Last Updated**: 2026-01-15
+**Project Version**: Early Development - Database & Styling Configured
 **Nuxt Version**: 4.2.2
+**Prisma Version**: 6.19.2
+**Tailwind CSS Version**: 4.1.18
 **Node Version**: v24.12.0 (recommended)
