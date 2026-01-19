@@ -1,7 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark;
+}
 
 html,
 body,
@@ -11,4 +15,34 @@ body,
   overflow-x: hidden;
   background-color: #fff;
   font-family: "DM Sans", sans-serif;
+
+  /* Hide scrollbar for Chrome, Safari, Opera, Brave */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#__nuxt::-webkit-scrollbar {
+  display: none;
+}
+
+:root {
+  /* light mode */
+  --primary: #10b981;
+  --background: #fafafa;
+  --text-color: #252525;
+  --destructive: #ef4444;
+  --secondary: #f3f4f6;
+}
+
+.dark {
+  /* dark mode */
+  --primary: #10b981;
+  --background: #252525;
+  --text-color: #fafafa;
+  --card: #252525;
+  --secondary: #444444;
+  --muted: #444;
+  --border: #444;
 }

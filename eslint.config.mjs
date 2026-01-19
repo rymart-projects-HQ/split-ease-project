@@ -5,7 +5,9 @@ import withNuxt from "./.nuxt/eslint.config.mjs";
 
 export default withNuxt(antfu({
   type: "app",
-  vue: true,
+  vue: {
+    vueVersion: 3,
+  },
   typescript: true,
   formatters: true,
   stylistic: {

@@ -1,13 +1,7 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <div>
-    <h1 class="text-3xl font-bold underline text-black">
-      Sample Texts
-      <button class="btn btn-accent">
-        Accent
-      </button>
-    </h1>
+  <div class="min-h-screen relative flex-col bg-primary-content">
+    <main>
+      <slot />
+    </main>
   </div>
 </template>
