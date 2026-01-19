@@ -6,11 +6,11 @@ definePageMeta({
 
 <template>
   <div>
-    <h1 class="text-2xl font-semibold">
+    <h1 class="text-2xl font-semibold text-black">
       Sample Page
     </h1>
-    <p class="mt-2 text-white/60">
-      Welcome to Nuxt 4!
+    <p class="mt-2 text-black">
+      Welcome to Nuxt 44!
     </p>
   </div>
 </template>
