@@ -1,12 +1,10 @@
 <script setup lang="ts">
+defineOptions({ name: "DashboardPage" });
 definePageMeta({
   layout: "app",
 });
 </script>
 
 <template>
-  <div class="main ">
-    <AppNavbar />
-    <div class="spacing px-5 md:px-10" />
-  </div>
+  <div class="main " />
 </template>
