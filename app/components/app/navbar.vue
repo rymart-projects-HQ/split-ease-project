@@ -15,10 +15,12 @@
     <div class="flex-none">
       <div class="flex flex-row items-center gap-5">
         <NuxtLink to="login" class="hover:text-[#10b981]">
-          Signin
+          Sign in
         </NuxtLink>
         <button class="btn btn-success rounded-[20px] w-auto lg:w-[170px]">
-          <a href="#" class="text-primary-content text-lg">Get Started</a>
+          <NuxtLink to="login" class="text-primary-content text-lg">
+            Get Started
+          </NuxtLink>
         </button>
         <AppThemeToggle />
       </div>
