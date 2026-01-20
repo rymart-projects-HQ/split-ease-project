@@ -14,7 +14,9 @@
     </NuxtLink>
     <div class="flex-none">
       <div class="flex flex-row items-center gap-5">
-        <a href="#" class=" hover:text-[#10b981]">Signin</a>
+        <NuxtLink to="login" class="hover:text-[#10b981]">
+          Signin
+        </NuxtLink>
         <button class="btn btn-success rounded-[20px] w-auto lg:w-[170px]">
           <a href="#" class="text-primary-content text-lg">Get Started</a>
         </button>
