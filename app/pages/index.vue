@@ -148,7 +148,7 @@ const whyChooseItems = [
               </div>
             </div>
             <div class="right flex items-center justify-center">
-              <div class="card bg-[#10b981]/10 rounded-[20px] p-10 xl:p-16 flex flex-col items-center justify-center gap-6 border border-[#10b981] w-full h-[200px]">
+              <div class="card bg-[#10b981]/10 rounded-[20px] p-10 xl:p-16 flex flex-col items-center justify-center gap-6 border border-[#10b981] w-[calc(100%+100px)] h-[calc(100%+180px)]">
                 <div class="icon-wrapper">
                   <Icon
                     name="material-symbols:bolt-outline-rounded"
