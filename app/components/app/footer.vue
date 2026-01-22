@@ -10,7 +10,21 @@
           >
           <span class="text-lg xl:text-xl font-semibold">SplitEase</span>
         </div>
-        <div class="copyright text-base-content/60 text-sm xl:text-md">
+        <div class="copyright text-base-content/60 text-sm xl:text-md flex flex-row items-center gap-1">
+          <div class="lg:hidden block w-fit flex items-center justify-center">
+            <Icon
+              size="15"
+              name="material-symbols:copyright-outline-rounded"
+              class="p-0 w-0"
+            />
+          </div>
+          <div class="hidden lg:block w-fit flex items-center justify-center">
+            <Icon
+              size="20"
+              name="material-symbols:copyright-outline-rounded"
+              class="p-0 w-0"
+            />
+          </div>
           2026 SplitEase. All rights reserved.
         </div>
         <div class="links flex gap-6">
