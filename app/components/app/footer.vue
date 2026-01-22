@@ -11,7 +11,7 @@
           <span class="text-lg xl:text-xl font-semibold">SplitEase</span>
         </div>
         <div class="copyright text-base-content/60 text-sm xl:text-md">
-          © 2026 SplitEase. All rights reserved.
+          2026 SplitEase. All rights reserved.
         </div>
         <div class="links flex gap-6">
           <a href="#" class="text-base-content/60 hover:text-[#10b981] transition-colors duration-300 text-sm xl:text-md">
