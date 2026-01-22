@@ -7,9 +7,9 @@ definePageMeta({
 // if (isAuthenticated) navigateTo('/dashboard')
 // else navigateTo('/)
 
-onMounted(() => {
-  navigateTo("/landing-page");
-});
+// onMounted(() => {
+//   navigateTo("/landing-page");
+// });
 
 const gridItems = [
   {
@@ -85,9 +85,9 @@ const whyChooseItems = [
                   name="tabler:arrow-narrow-right"
                 />
               </button>
-              <button class="sign-in btn text-base-content btn-outline border-2 border-base-content/60 hover:border-[#10b981] xl:text-xl py-8 px-5 rounded-[20px]">
+              <NuxtLink to="login" class="sign-in btn text-base-content btn-outline border-2 border-base-content/60 hover:border-[#10b981] xl:text-xl py-8 px-5 rounded-[20px]">
                 Sign in
-              </button>
+              </NuxtLink>
             </div>
             <p class="label pt-10 text-[16px]">
               Free Forever
