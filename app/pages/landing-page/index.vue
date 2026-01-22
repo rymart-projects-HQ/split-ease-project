@@ -70,7 +70,7 @@ const whyChooseItems = [
             </p>
             <div class="cta flex flex-row justify-center items-center gap-6">
               <button class="get-started btn text-base-content bg-[#10b981] rounded-[20px] xl:text-xl py-8 px-5 flex items-center gap-2 group shadow-xl/30">
-                Get Started Free
+                Proceed Demo
                 <Icon
                   class="transition-transform duration-300 group-hover:translate-x-1"
                   size="30"
@@ -193,6 +193,53 @@ const whyChooseItems = [
                 class="text-[#10b981]"
               />
             </button>
+          </div>
+        </div>
+      </section>
+      <section class="contact-section bg-base-200">
+        <div class="header flex flex-col justify-center items-center py-10">
+          <p class="text-neutral-content text-3xl lg:text-5xl py-10">
+            Get in Touch
+          </p>
+          <p class="text-xl text-base-content/60">
+            Interested? Contact me on my email
+          </p>
+          <div class="flex flex-col lg:flex-row items-center justify-center gap-10 py-12">
+            <div class="item p-8 rounded-[20px] flex flex-col items-start jutisfy-start gap-2 border border-gray-100/20 bg-base-100 w-full lg:w-80">
+              <div class="icon-wrapper flex flex-col w-fit items-center justify-center bg-[#10b981]/10 rounded-[20px] p-3">
+                <Icon
+                  name="material-symbols:mail-outline-rounded"
+                  size="30"
+                  class="text-[#10b981]"
+                />
+              </div>
+              <p class="label text-neutral-content">
+                Email Me
+              </p>
+              <p class="label text-[#10b981]">
+                dev.reymartcasas@gmail.com
+              </p>
+            </div>
+
+            <div class="item p-8 rounded-[20px] flex flex-col items-start jutisfy-start gap-2 border border-gray-100/20 bg-base-100 w-full lg:w-80">
+              <div class="icon-wrapper flex flex-col w-fit items-center justify-center bg-[#10b981]/10 rounded-[20px] p-3">
+                <Icon
+                  name="material-symbols:plug-connect-outline-rounded"
+                  size="30"
+                  class="text-[#10b981]"
+                />
+              </div>
+              <p class="label text-neutral-content">
+                Connect
+              </p>
+              <p class="label text-base-content/60">
+                Connect me on <span class="text-[#10b981] hover:text-underline">
+                  <NuxtLink to="#">
+                    Linkedin
+                  </NuxtLink>
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </section>
