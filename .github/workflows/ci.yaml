@@ -53,7 +53,7 @@ jobs:
           commit_time=$(git log -1 --pretty=%cI)
 
           # Format timestamp to MM/dd/yyyy HH:mm
-          formatted_time=$(date -d "$commit_time" "+%m/%d/%Y %H:%M" 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%S%z" "$commit_time" "+%m/%d/%Y %H:%M")
+          formatted_time=$(TZ='Asia/Manila' date -d "$commit_time" "+%m/%d/%Y %H:%M" 2>/dev/null || TZ='Asia/Manila' date -j -f "%Y-%m-%dT%H:%M:%S%z" "$commit_time" "+%m/%d/%Y %H:%M")
 
           echo "message=${commit_msg}" >> $GITHUB_OUTPUT
           echo "hash=${commit_hash}" >> $GITHUB_OUTPUT
@@ -81,7 +81,7 @@ jobs:
                  },
                  "embeds": [{
                    "title": "Workflow: ${{ github.workflow }}",
-                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Time:** ${{ steps.commit-info.outputs.time }}",
+                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Date\Time:** ${{ steps.commit-info.outputs.time }}",
                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                    "color": 15158332,
                    "footer": {
