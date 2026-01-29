@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: This will fail
-        run: exit
+        run: exit 1
 
   # Discord Alert
   notify-failure:
