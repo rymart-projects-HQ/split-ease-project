@@ -40,19 +40,45 @@ jobs:
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
 
     steps:
+      - name: Checkout to get commit message
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get commit info
+        id: commit-info
+        run: |
+          commit_msg=$(git log -1 --pretty=%B)
+          echo "message=${commit_msg}" >> $GITHUB_OUTPUT
+
+      - name: Check job statuses
+        id: check-jobs
+        run: |
+          failed_jobs=""
+          if [ "${{ needs.lint.result }}" == "failure" ]; then
+            failed_jobs="${failed_jobs}❌ Lint\n"
+          fi
+          if [ "${{ needs.test-failure.result }}" == "failure" ]; then
+            failed_jobs="${failed_jobs}❌ Test Failure\n"
+          fi
+          echo "failed_jobs=${failed_jobs}" >> $GITHUB_OUTPUT
+
       - name: Send Discord notification
         run: |
           curl -H "Content-Type: application/json" \
-              -d '{
-                "content": "🚨 **CI Pipeline Failed**",
-                "embeds": [{
-                  "title": "Workflow: ${{ github.workflow }}",
-                  "description": "Branch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`\nAuthor: ${{ github.actor }}",
-                  "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "color": 15158332
-                }]
-              }' \
-              ${{ secrets.DISCORD_WEBHOOK_URL }}
+               -d '{
+                 "content": "🚨 **CI Pipeline Failed**",
+                 "embeds": [{
+                   "title": "Workflow: ${{ github.workflow }}",
+                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** [`${{ github.event.head_commit.id }}`.substr(0,7)](${{ github.event.head_commit.url }})\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Time:** <t:${{ github.event.head_commit.timestamp }}:R>",
+                   "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                   "color": 15158332,
+                   "footer": {
+                     "text": "Click title to view full logs"
+                   }
+                 }]
+               }' \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   ci-success:
     name: CI Success
