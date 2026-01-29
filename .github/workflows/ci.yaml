@@ -80,14 +80,14 @@ jobs:
                  "roles": ["${{ secrets.DISCORD_ROLE_MASTER_ID }}"]
                  },
                  "embeds": [{
-                   "title": "Workflow: ${{ github.workflow }}",
-                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Date\Time:** ${{ steps.commit-info.outputs.time }}",
-                   "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                   "color": 15158332,
-                   "footer": {
-                     "text": "Click title to view full logs"
-                   }
-                 }]
+                    "title": "Workflow: ${{ github.workflow }}",
+                    "description": "**Repository:** `${{ github.repository }}`\n**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Date\Time:** ${{ steps.commit-info.outputs.time }}",
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                    "color": 15158332,
+                    "footer": {
+                      "text": "Click title to view full logs"
+                    }
+                  }]
                }' \
                ${{ secrets.DISCORD_WEBHOOK_URL }}
 
