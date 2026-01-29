@@ -49,17 +49,25 @@ jobs:
         id: commit-info
         run: |
           commit_msg=$(git log -1 --pretty=%B)
+          commit_hash=$(git log -1 --pretty=%h)
+          commit_time=$(git log -1 --pretty=%cI)
+
+          # Format timestamp to MM/dd/yyyy HH:mm
+          formatted_time=$(date -d "$commit_time" "+%m/%d/%Y %H:%M" 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%S%z" "$commit_time" "+%m/%d/%Y %H:%M")
+
           echo "message=${commit_msg}" >> $GITHUB_OUTPUT
+          echo "hash=${commit_hash}" >> $GITHUB_OUTPUT
+          echo "time=${formatted_time}" >> $GITHUB_OUTPUT
 
       - name: Check job statuses
         id: check-jobs
         run: |
           failed_jobs=""
           if [ "${{ needs.lint.result }}" == "failure" ]; then
-            failed_jobs="${failed_jobs}❌ Lint\n"
+            failed_jobs="${failed_jobs} lint\n"
           fi
           if [ "${{ needs.test-failure.result }}" == "failure" ]; then
-            failed_jobs="${failed_jobs}❌ Test Failure\n"
+            failed_jobs="${failed_jobs} test-failure\n"
           fi
           echo "failed_jobs=${failed_jobs}" >> $GITHUB_OUTPUT
 
@@ -70,7 +78,7 @@ jobs:
                  "content": "🚨 **CI Pipeline Failed**",
                  "embeds": [{
                    "title": "Workflow: ${{ github.workflow }}",
-                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** [`${{ github.event.head_commit.id }}`.substr(0,7)](${{ github.event.head_commit.url }})\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Time:** <t:${{ github.event.head_commit.timestamp }}:R>",
+                   "description": "**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Time:** ${{ steps.commit-info.outputs.time }}",
                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                    "color": 15158332,
                    "footer": {
