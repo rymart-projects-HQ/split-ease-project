@@ -26,6 +26,8 @@ const touched = reactive({
   confirmPassword: false,
 });
 
+const isLoading = ref(false);
+
 function validateForm() {
   let isValid = true;
 
@@ -57,6 +59,9 @@ function validateForm() {
     errors.password = "Password is required";
     isValid = false;
   }
+  else if (form.password.length < 8) {
+    errors.password = "Password Must Atleast 8 Characters";
+  }
   else {
     errors.password = "";
   }
@@ -69,6 +74,9 @@ function validateForm() {
   else if (form.confirmPassword !== form.password) {
     errors.confirmPassword = "Passwords do not match";
     isValid = false;
+  }
+  else if (form.password.length !== 8) {
+    errors.password = "Password Must Atleast 8 Characters";
   }
   else {
     errors.confirmPassword = "";
@@ -100,11 +108,13 @@ function handleSubmit() {
       <div class="hero-content flex-col text-center w-full max-w-[480px] mx-auto px-4">
         <div class="header flex flex-col gap-2 pb-5">
           <div class="splitease-logo mx-auto flex justify-center">
-            <img
-              src="/assets/splitease-logo.svg"
-              class="w-20 h-20"
-              alt=""
-            >
+            <NuxtLink to="/">
+              <img
+                src="/assets/splitease-logo.svg"
+                class="w-20 h-20"
+                alt=""
+              >
+            </NuxtLink>
           </div>
           <p class="text-16px md:text-[24px]">
             Welcome to SplitEase
@@ -131,7 +141,7 @@ function handleSubmit() {
             </div>
             <div class="flex-1 h-[1px] bg-base-content/20" />
           </div>
-          <div class="form w-full max-w-md mx-auto flex flex-col gap-4 text-left">
+          <form class="form w-full max-w-md mx-auto flex flex-col gap-4 text-left" @submit.prevent="handleSubmit">
             <!-- Full Name -->
             <div class="flex flex-col gap-2">
               <label class="text-base-content text-sm font-medium text-left">Full name</label>
@@ -143,6 +153,7 @@ function handleSubmit() {
                   v-model="form.fullName"
                   type="text"
                   placeholder="John Doe"
+                  :disabled="isLoading"
                   class="input input-bordered w-full pl-7 bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.fullName && errors.fullName ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -160,6 +171,7 @@ function handleSubmit() {
                   v-model="form.email"
                   type="email"
                   placeholder="you@example.com"
+                  :disabled="isLoading"
                   class="input input-bordered w-full pl-7 bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.email && errors.email ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -177,6 +189,7 @@ function handleSubmit() {
                   v-model="form.password"
                   type="password"
                   placeholder="••••••••"
+                  :disabled="isLoading"
                   class="input pl-7 input-bordered w-full bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.password && errors.password ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -194,6 +207,7 @@ function handleSubmit() {
                   v-model="form.confirmPassword"
                   type="password"
                   placeholder="••••••••"
+                  :disabled="isLoading"
                   class="input pl-7 input-bordered w-full bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.confirmPassword && errors.confirmPassword ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -201,18 +215,19 @@ function handleSubmit() {
               <span v-if="touched.confirmPassword && errors.confirmPassword" class="text-red-500 text-sm">{{ errors.confirmPassword }}</span>
             </div>
             <button
-              type="button"
+              type="submit"
               class="btn btn-success w-full rounded-lg h-14 text-neutral-content font-semibold mt-2 lg:text-xl"
+              :disabled="isLoading"
               @click="handleSubmit"
             >
-              Create an Account
+              {{ isLoading ? 'Creating Account' : 'Create Account' }}
             </button>
             <p class="text-center text-base-content/60 text-sm mt-2">
               Already have an account? <NuxtLink to="login" class="text-[#10b981] hover:underline font-medium">
                 Sign in
               </NuxtLink>
             </p>
-          </div>
+          </form>
         </div>
         <p class="text-center text-base-content/60 text-sm mt-2">
           By signing in, you agree to our <a href="#" class="hover:underline font-medium">Terms</a> and <a href="#" class="hover:underline font-medium">Service</a>

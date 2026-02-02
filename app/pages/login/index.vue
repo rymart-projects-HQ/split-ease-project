@@ -20,6 +20,8 @@ const touched = reactive({
   password: false,
 });
 
+const isLoading = ref(false);
+
 function validateForm() {
   let isValid = true;
 
@@ -70,11 +72,13 @@ function handleSubmit() {
       <div class="hero-content flex-col text-center w-full max-w-[480px] mx-auto px-4">
         <div class="header flex flex-col gap-2 pb-5">
           <div class="splitease-logo mx-auto flex justify-center">
-            <img
-              src="/assets/splitease-logo.svg"
-              class="w-20 h-20"
-              alt=""
-            >
+            <NuxtLink to="/">
+              <img
+                src="/assets/splitease-logo.svg"
+                class="w-20 h-20"
+                alt=""
+              >
+            </NuxtLink>
           </div>
           <p class="text-16px md:text-[24px]">
             Welcome to SplitEase
@@ -101,7 +105,7 @@ function handleSubmit() {
             </div>
             <div class="flex-1 h-[1px] bg-base-content/20" />
           </div>
-          <div class="form w-full max-w-md mx-auto flex flex-col gap-4 text-left">
+          <form class="form w-full max-w-md mx-auto flex flex-col gap-4 text-left" @submit.prevent="handleSubmit">
             <!-- Email -->
             <div class="flex flex-col gap-2">
               <label class="text-base-content text-sm font-medium text-left">Email address</label>
@@ -113,6 +117,7 @@ function handleSubmit() {
                   v-model="form.email"
                   type="email"
                   placeholder="you@example.com"
+                  :disabled="isLoading"
                   class="input input-bordered w-full pl-7 bg-base-100 border rounded-lg h-14 focus:outline-[#10b981] active:outline-[#10b981] focus:border-none"
                   :class="touched.email && errors.email ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -133,6 +138,7 @@ function handleSubmit() {
                   v-model="form.password"
                   type="password"
                   placeholder="••••••••"
+                  :disabled="isLoading"
                   class="input pl-7 input-bordered w-full bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.password && errors.password ? 'border-red-500' : 'border-base-content/20'"
                 >
@@ -140,18 +146,24 @@ function handleSubmit() {
               <span v-if="touched.password && errors.password" class="text-red-500 text-sm">{{ errors.password }}</span>
             </div>
             <button
-              type="button"
+              type="submit"
               class="btn btn-success w-full rounded-lg h-14 text-neutral-content font-semibold mt-2 lg:text-xl"
+              :disabled="isLoading"
               @click="handleSubmit"
             >
-              Sign in
+              {{ isLoading ? 'Logging In' : 'Sign In' }}
             </button>
+            <div class="demo-note">
+              <p class="text-[#10b981] text-[sm]">
+                Or proceed With <span> <NuxtLink to="/" class="font-semibold hover:underline"> Demo Account</NuxtLink></span>
+              </p>
+            </div>
             <p class="text-center text-base-content/60 text-sm mt-2">
               Don't have an account? <NuxtLink to="signup" class="text-[#10b981] hover:underline font-medium">
                 Sign up
               </NuxtLink>
             </p>
-          </div>
+          </form>
         </div>
         <p class="text-center text-base-content/60 text-sm mt-2">
           By signing in, you agree to our <a href="#" class="hover:underline font-medium">Terms</a> and <a href="#" class="hover:underline font-medium">Service</a>
