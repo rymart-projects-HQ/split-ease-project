@@ -1,12 +1,12 @@
 # App Directory
 
-This is the Nuxt 3 application directory containing all frontend code for SplitEase.
+This is the Nuxt 4 application directory containing all frontend code for SplitEase.
 
 ## Directory Structure
 
 ### Core Files
 
-- `app.vue` - Root Vue component, wraps all pages
+- `app.vue` - Root Vue component with NuxtLoadingIndicator (color: #10b981, duration: 2000ms, height: 3px)
 - `app.config.ts` - App-level configuration (theme, runtime settings)
 - `error.vue` - Global error page for 404 and 500 errors
 
@@ -16,17 +16,15 @@ This is the Nuxt 3 application directory containing all frontend code for SplitE
 
 Static assets that need build-time processing.
 
-- `main.css` - Global styles and Tailwind directives
+- `css/main.css` - Global styles and Tailwind directives
 
 #### `/components`
 
-Reusable Vue components organized by feature:
+Reusable Vue components:
 
-- `auth/` - Authentication-related components
-- `expenses/` - Expense management components
-- `groups/` - Group management components
-- `balances/` - Balance calculation and display components
-- `ui/` - Generic UI components (buttons, forms, modals)
+- `app/themeToggle.vue` - Dark/light mode toggle
+- `app/navbar.vue` - Application navigation bar
+- `app/footer.vue` - Application footer
 
 #### `/composables`
 
@@ -36,27 +34,37 @@ Vue composables for shared reactive logic and business logic.
 
 Page templates that wrap page content:
 
-- `app.vue` - Default layout for authenticated pages
+- `app.vue` - Layout for application pages
 
 #### `/pages`
 
-File-based routing. Each `.vue` file becomes a route:
+File-based routing. See [pages/README.md](pages/README.md) for details.
 
-- `login/` - Login and authentication pages
-- Additional routes created automatically based on file structure
+Current routes:
+
+- `/` - Landing page
+- `/login` - User login with form validation
+- `/signup` - User registration with password requirements
+- `/dashboard` - User dashboard
 
 #### `/types`
 
-TypeScript type definitions specific to the frontend:
-
-- Client-side specific types (UI state, form data)
-- Separate from server types to avoid importing server-only code
+TypeScript type definitions specific to the frontend.
 
 #### `/utils`
 
 Utility functions and helpers for the frontend.
 
-## Nuxt 3 Auto-imports
+## Authentication Pages
+
+Both login and signup pages include:
+
+- **Loading States:** `isLoading` ref for form submission feedback
+- **Form Validation:** Email format, password requirements (min 8 chars)
+- **UX Features:** Disabled inputs during submission, loading button text
+- **Proper Forms:** `<form>` elements with `@submit.prevent`
+
+## Nuxt Auto-imports
 
 The following are auto-imported by Nuxt:
 
@@ -66,4 +74,4 @@ The following are auto-imported by Nuxt:
 - Vue APIs (ref, computed, watch, etc.)
 - Nuxt APIs (useRouter, useRoute, navigateTo, etc.)
 
-No explicit imports needed for these files!
+No explicit imports needed for these files.

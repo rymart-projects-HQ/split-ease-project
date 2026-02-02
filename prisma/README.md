@@ -68,7 +68,10 @@ Located in `prisma/schema.prisma`:
 ## Common Commands
 
 ```bash
-# Generate Prisma Client after schema changes
+# Generate Prisma Client (via npm script)
+npm run prismagenerate
+
+# Or directly with npx
 npx prisma generate
 
 # Create a new migration
@@ -86,14 +89,15 @@ npx prisma migrate reset
 
 ## Integration with Nuxt
 
-The Prisma Client is available globally in your Nuxt application. Import it in server routes or API endpoints:
+The Prisma Client is configured as a singleton in `server/utils/prisma.ts`:
+
+- Auto-imported in server routes
+- Development-safe global caching (prevents multiple instances during hot reload)
+
+Usage in API routes:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-// Use in your API routes
+// prisma is auto-imported from server/utils/prisma.ts
 export default defineEventHandler(async (event) => {
   const users = await prisma.user.findMany();
   return users;
