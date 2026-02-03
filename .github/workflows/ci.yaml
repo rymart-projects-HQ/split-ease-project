@@ -1,4 +1,4 @@
-name: Node.js CI
+name: CI Split-Ease Project
 
 on:
   pull_request:
@@ -36,7 +36,7 @@ jobs:
   notify-failure:
     name: Notify on Failure
     runs-on: ubuntu-latest
-    needs: [lint, test-failure]
+    needs: [lint]
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
 
     steps:
@@ -66,9 +66,9 @@ jobs:
           if [ "${{ needs.lint.result }}" == "failure" ]; then
             failed_jobs="${failed_jobs} lint\n"
           fi
-          if [ "${{ needs.test-failure.result }}" == "failure" ]; then
-            failed_jobs="${failed_jobs} test-failure\n"
-          fi
+          #if [ "${{ needs.test-failure.result }}" == "failure" ]; then
+            #failed_jobs="${failed_jobs} test-failure\n"
+          #fi
           echo "failed_jobs=${failed_jobs}" >> $GITHUB_OUTPUT
 
       - name: Send Discord notification
