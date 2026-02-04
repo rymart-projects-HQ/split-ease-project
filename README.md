@@ -69,4 +69,3 @@ Open [http://localhost:3000](http://localhost:3000)
 - [Prisma](prisma/README.md) - Database setup
 - [Server](server/README.md) - API routes
 
-Test if git push works
