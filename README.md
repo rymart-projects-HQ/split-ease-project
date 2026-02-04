@@ -68,3 +68,5 @@ Open [http://localhost:3000](http://localhost:3000)
 - [App Directory](app/README.md) - Frontend structure
 - [Prisma](prisma/README.md) - Database setup
 - [Server](server/README.md) - API routes
+
+Test to verify git works
