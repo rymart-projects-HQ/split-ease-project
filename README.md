@@ -1,73 +1,71 @@
-# Nuxt Split Ease
+# SplitEase
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A modern expense splitting application for groups, roommates, and teams. Built with Nuxt 4.
+
+## Tech Stack
+
+- **Frontend:** Nuxt 4.2.2, Vue 3.5, TypeScript 5.9
+- **Styling:** Tailwind CSS 4.1, DaisyUI 5.5
+- **Database:** Prisma 6.19 with PostgreSQL
+- **Icons:** @nuxt/icon with Material Symbols
+- **Color Mode:** @nuxtjs/color-mode
+
+## Project Structure
+
+```
+split-ease-project/
+├── app/           # Frontend (pages, components, layouts)
+├── prisma/        # Database schema and migrations
+├── server/        # API routes and utilities
+├── test/          # Test configuration
+└── .github/       # CI/CD workflows
+```
 
 ## Setup
 
-Make sure to install dependencies:
+### 1. Install dependencies
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+### 2. Configure environment
 
-Start the development server on `http://localhost:3000`:
+Copy `.env.example` to `.env` and set your database URL:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/splitease"
+```
+
+### 3. Setup database
 
 ```bash
-# npm
+npm run prismagenerate
+npx prisma migrate deploy
+```
+
+### 4. Start development server
+
+```bash
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Open [http://localhost:3000](http://localhost:3000)
 
-Build the application for production:
+## Available Scripts
 
-```bash
-# npm
-npm run build
+| Script                   | Description              |
+| ------------------------ | ------------------------ |
+| `npm run dev`            | Start development server |
+| `npm run build`          | Build for production     |
+| `npm run preview`        | Preview production build |
+| `npm run lint`           | Run ESLint               |
+| `npm run lint:fix`       | Fix ESLint errors        |
+| `npm run prismagenerate` | Generate Prisma client   |
 
-# pnpm
-pnpm build
+## Documentation
 
-# yarn
-yarn build
+- [App Directory](app/README.md) - Frontend structure
+- [Prisma](prisma/README.md) - Database setup
+- [Server](server/README.md) - API routes
 
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```

@@ -1,9 +1,13 @@
-name: Node.js CI
+name: CI Split-Ease Project
 
 on:
   pull_request:
     branches:
       - main
+      - staging
+  push:
+    branches:
+      - staging
 
 jobs:
   lint:
@@ -19,3 +23,85 @@ jobs:
         run: npm ci
       - name: Run lint
         run: npm run lint:fix
+
+  test-failure:
+    name: Test Failure Alert
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: This will fail
+        run: exit 1
+
+  # Discord Alert
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [lint]
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+
+    steps:
+      - name: Checkout to get commit message
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get commit info
+        id: commit-info
+        run: |
+          commit_msg=$(git log -1 --pretty=%B)
+          commit_hash=$(git log -1 --pretty=%h)
+          commit_time=$(git log -1 --pretty=%cI)
+
+          # Format timestamp to MM/dd/yyyy HH:mm
+          formatted_time=$(TZ='Asia/Manila' date -d "$commit_time" "+%m/%d/%Y %H:%M" 2>/dev/null || TZ='Asia/Manila' date -j -f "%Y-%m-%dT%H:%M:%S%z" "$commit_time" "+%m/%d/%Y %H:%M")
+
+          echo "message=${commit_msg}" >> $GITHUB_OUTPUT
+          echo "hash=${commit_hash}" >> $GITHUB_OUTPUT
+          echo "time=${formatted_time}" >> $GITHUB_OUTPUT
+
+      - name: Check job statuses
+        id: check-jobs
+        run: |
+          failed_jobs=""
+          if [ "${{ needs.lint.result }}" == "failure" ]; then
+            failed_jobs="${failed_jobs} lint\n"
+          fi
+          #if [ "${{ needs.test-failure.result }}" == "failure" ]; then
+            #failed_jobs="${failed_jobs} test-failure\n"
+          #fi
+          echo "failed_jobs=${failed_jobs}" >> $GITHUB_OUTPUT
+
+      - name: Send Discord notification
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{
+                 "content": "Hello Everyone! \n<@&${{ secrets.DISCORD_ROLE_MASTER_ID }}>, <@&${{ secrets.DISCORD_ROLE_MASTER_ID }}>  \n\n**CI Pipeline Failed**",
+                 "allowed_mentions": {
+                   "roles": ["${{ secrets.DISCORD_ROLE_MASTER_ID }}"]
+                 },
+                 "embeds": [{
+                   "title": "Workflow: ${{ github.workflow }}",
+                   "description": "**Repository:** `${{ github.repository }}`\n**Failed Jobs:**\n${{ steps.check-jobs.outputs.failed_jobs }}\n**Commit:** `${{ steps.commit-info.outputs.hash }}`\n```${{ steps.commit-info.outputs.message }}```\n**Branch:** `${{ github.ref_name }}`\n**Author:** ${{ github.actor }}\n**Date and Time:** ${{ steps.commit-info.outputs.time }}",
+                   "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                   "color": 15158332,
+                   "footer": {
+                     "text": "Click title to view full logs"
+                   }
+                 }]
+               }' \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [lint]
+    if: always()
+
+    steps:
+      - name: Check all jobs
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ]; then
+            echo "One or more CI jobs failed"
+            exit 1
+          fi
+          echo "All CI jobs passed successfully"

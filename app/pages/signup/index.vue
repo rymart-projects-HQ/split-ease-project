@@ -1,29 +1,44 @@
 <script setup lang="ts">
-// login page
-defineOptions({ name: "LoginPage" });
+// signup page
+defineOptions({ name: "SignupPage" });
 definePageMeta({
   layout: "app",
 });
 
 const form = reactive({
+  fullName: "",
   email: "",
   password: "",
+  confirmPassword: "",
 });
 
 const errors = reactive({
+  fullName: "",
   email: "",
   password: "",
+  confirmPassword: "",
 });
 
 const touched = reactive({
+  fullName: false,
   email: false,
   password: false,
+  confirmPassword: false,
 });
 
 const isLoading = ref(false);
 
 function validateForm() {
   let isValid = true;
+
+  // Full name validation
+  if (!form.fullName.trim()) {
+    errors.fullName = "Name is required";
+    isValid = false;
+  }
+  else {
+    errors.fullName = "";
+  }
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/;
@@ -44,21 +59,42 @@ function validateForm() {
     errors.password = "Password is required";
     isValid = false;
   }
+  else if (form.password.length < 8) {
+    errors.password = "Password Must Atleast 8 Characters";
+  }
   else {
     errors.password = "";
   }
 
+  // Confirm password validation
+  if (!form.confirmPassword) {
+    errors.confirmPassword = "Please confirm your password";
+    isValid = false;
+  }
+  else if (form.confirmPassword !== form.password) {
+    errors.confirmPassword = "Passwords do not match";
+    isValid = false;
+  }
+  else if (form.password.length !== 8) {
+    errors.password = "Password Must Atleast 8 Characters";
+  }
+  else {
+    errors.confirmPassword = "";
+  }
+
   // Mark all fields as touched
+  touched.fullName = true;
   touched.email = true;
   touched.password = true;
+  touched.confirmPassword = true;
 
   return isValid;
 }
 
 function handleSubmit() {
   if (validateForm()) {
-    // TODO: Handle login submission
-    // console.log("Login submitted:", form);
+    // TODO: Handle form submission
+    // console.log("Form submitted:", form);
   }
 }
 </script>
@@ -84,7 +120,7 @@ function handleSubmit() {
             Welcome to SplitEase
           </p>
           <p class="text-base-content/80">
-            Split expenses seamlessly with your group
+            Join SplitEase and start splitting expenses
           </p>
         </div>
         <div class="w-full bg-base-100 rounded-[20px] border border-gray-100/20 flex flex-col gap-8 p-10">
@@ -101,11 +137,29 @@ function handleSubmit() {
           <div class="flex flex-row items-center gap-4 w-full max-w-md mx-auto my-4">
             <div class="flex-1 h-[1px] bg-base-content/20" />
             <div class="text-base-content/60 text-sm whitespace-nowrap">
-              Or continue with email
+              Or register with email
             </div>
             <div class="flex-1 h-[1px] bg-base-content/20" />
           </div>
           <form class="form w-full max-w-md mx-auto flex flex-col gap-4 text-left" @submit.prevent="handleSubmit">
+            <!-- Full Name -->
+            <div class="flex flex-col gap-2">
+              <label class="text-base-content text-sm font-medium text-left">Full name</label>
+              <div class="relative">
+                <span class="absolute left-2 top-[33px] -translate-y-1/2 text-base-content/40 z-10">
+                  <Icon name="material-symbols:person-outline-rounded" class="w-5 h-5" />
+                </span>
+                <input
+                  v-model="form.fullName"
+                  type="text"
+                  placeholder="John Doe"
+                  :disabled="isLoading"
+                  class="input input-bordered w-full pl-7 bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
+                  :class="touched.fullName && errors.fullName ? 'border-red-500' : 'border-base-content/20'"
+                >
+              </div>
+              <span v-if="touched.fullName && errors.fullName" class="text-red-500 text-sm">{{ errors.fullName }}</span>
+            </div>
             <!-- Email -->
             <div class="flex flex-col gap-2">
               <label class="text-base-content text-sm font-medium text-left">Email address</label>
@@ -118,7 +172,7 @@ function handleSubmit() {
                   type="email"
                   placeholder="you@example.com"
                   :disabled="isLoading"
-                  class="input input-bordered w-full pl-7 bg-base-100 border rounded-lg h-14 focus:outline-[#10b981] active:outline-[#10b981] focus:border-none"
+                  class="input input-bordered w-full pl-7 bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
                   :class="touched.email && errors.email ? 'border-red-500' : 'border-base-content/20'"
                 >
               </div>
@@ -126,10 +180,7 @@ function handleSubmit() {
             </div>
             <!-- Password -->
             <div class="flex flex-col gap-2">
-              <div class="flex flex-row justify-between items-center w-full">
-                <label class="text-base-content text-sm font-medium">Password</label>
-                <a href="#" class="text-[#10b981] text-sm hover:underline whitespace-nowrap">Forgot password?</a>
-              </div>
+              <label class="text-base-content text-sm font-medium">Password</label>
               <div class="relative">
                 <span class="absolute left-2 top-[33px] -translate-y-1/2 text-base-content/40 z-10">
                   <Icon name="material-symbols:lock-outline-rounded" class="w-5 h-5" />
@@ -145,22 +196,35 @@ function handleSubmit() {
               </div>
               <span v-if="touched.password && errors.password" class="text-red-500 text-sm">{{ errors.password }}</span>
             </div>
+            <!-- Confirm Password -->
+            <div class="flex flex-col gap-2">
+              <label class="text-base-content text-sm font-medium">Confirm password</label>
+              <div class="relative">
+                <span class="absolute left-2 top-[33px] -translate-y-1/2 text-base-content/40 z-10">
+                  <Icon name="material-symbols:lock-outline-rounded" class="w-5 h-5" />
+                </span>
+                <input
+                  v-model="form.confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  :disabled="isLoading"
+                  class="input pl-7 input-bordered w-full bg-base-100 border focus:outline-[#10b981] active:outline-[#10b981] focus:border-none rounded-lg h-14"
+                  :class="touched.confirmPassword && errors.confirmPassword ? 'border-red-500' : 'border-base-content/20'"
+                >
+              </div>
+              <span v-if="touched.confirmPassword && errors.confirmPassword" class="text-red-500 text-sm">{{ errors.confirmPassword }}</span>
+            </div>
             <button
               type="submit"
               class="btn btn-success w-full rounded-lg h-14 text-neutral-content font-semibold mt-2 lg:text-xl"
               :disabled="isLoading"
               @click="handleSubmit"
             >
-              {{ isLoading ? 'Logging In' : 'Sign In' }}
+              {{ isLoading ? 'Creating Account' : 'Create Account' }}
             </button>
-            <div class="demo-note">
-              <p class="text-[#10b981] text-[sm]">
-                Or proceed With <span> <NuxtLink to="/" class="font-semibold hover:underline"> Demo Account</NuxtLink></span>
-              </p>
-            </div>
             <p class="text-center text-base-content/60 text-sm mt-2">
-              Don't have an account? <NuxtLink to="signup" class="text-[#10b981] hover:underline font-medium">
-                Sign up
+              Already have an account? <NuxtLink to="login" class="text-[#10b981] hover:underline font-medium">
+                Sign in
               </NuxtLink>
             </p>
           </form>

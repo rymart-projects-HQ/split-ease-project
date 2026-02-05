@@ -1,0 +1,53 @@
+name: Keep Supabase Database Alive
+
+# When to run this workflow
+on:
+  schedule:
+    # Cron syntax: minute hour day-of-month month day-of-week
+    # "0 12 * * 0" = Every Sunday at 12:00 UTC (8:00 PM Philippine Time)
+    # - cron: "0 12 * * 0"
+    # - cron: "30 20 * * *"
+    - cron: "55 20 * * 5"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Supabase Health Check
+        id: health_check
+        run: |
+          echo "Performing health check..."
+
+          # Make the API call to our health_check function
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/rpc/health_check" \
+            -H "apikey: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}" \
+            -H "Content-Type: application/json")
+
+          # Extract HTTP status code and response body
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          # Check if request was successful
+          if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 201 ]; then
+            echo "✅ Health check passed! Database is alive."
+            echo "⏰ Checked at: $(date)"
+          else
+            echo "❌ Health check failed with status $http_code"
+            exit 1
+          fi
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "🎉 Successfully pinged Supabase database"
+          echo "🔄 Inactivity timer has been reset"
+          echo "📅 Next automatic check: Next Sunday at 12:00 UTC"

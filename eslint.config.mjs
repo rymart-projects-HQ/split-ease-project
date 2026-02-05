@@ -5,7 +5,9 @@ import withNuxt from "./.nuxt/eslint.config.mjs";
 
 export default withNuxt(antfu({
   type: "app",
-  vue: true,
+  vue: {
+    vueVersion: 3,
+  },
   typescript: true,
   formatters: true,
   stylistic: {
@@ -13,7 +15,7 @@ export default withNuxt(antfu({
     semi: true,
     quotes: "double",
   },
-  ignores: [".npm-store/**", "**/migrations/*", ".claude/**"],
+  ignores: [".npm-store/**", "**/migrations/*", ".claude/**", "./server/utils/prisma.ts"],
 }, {
   rules: {
     "vue/max-attributes-per-line": ["error", {
@@ -41,5 +43,10 @@ export default withNuxt(antfu({
       },
       ignore: ["README.md"],
     }],
+  },
+}, {
+  files: ["server/utils/prisma.ts"],
+  rules: {
+    "no-var": "off",
   },
 }));
