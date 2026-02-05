@@ -6,7 +6,7 @@ export default function tryParseEnv<T extends ZodRawShape>(
   EnvSchema: ZodObject<T>,
 
   // eslint-disable-next-line node/no-process-env
-  buildEnv: Record<string, string | undefine> = process.env,
+  buildEnv: Record<string, string | undefined> = process.env,
 ) {
   try {
     EnvSchema.parse(buildEnv);
