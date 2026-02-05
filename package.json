@@ -10,7 +10,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "prismagenerate": "npx prisma generate"
   },
   "dependencies": {
