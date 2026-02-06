@@ -1,3 +1,4 @@
+/* eslint-disable node/no-process-env */
 import tailwindcss from "@tailwindcss/vite";
 
 import "./lib/env";
@@ -16,6 +17,16 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
+  },
+  runtimeConfig: {
+    // Private (server-only, never sent to browser)
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+
+    // Public (safe to expose to browser)
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    },
   },
   css: ["~/assets/css/main.css"],
   colorMode: {

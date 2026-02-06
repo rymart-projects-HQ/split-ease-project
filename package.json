@@ -17,6 +17,7 @@
     "@nuxt/icon": "^2.2.0",
     "@nuxtjs/color-mode": "^4.0.0",
     "@prisma/client": "^6.19.2",
+    "@supabase/supabase-js": "^2.95.2",
     "@tailwindcss/vite": "^4.1.18",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",

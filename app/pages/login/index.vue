@@ -56,7 +56,7 @@ function validateForm() {
 function handleSubmit() {
   if (validateForm()) {
     // TODO: Handle login submission
-    console.log("Login submitted:", form);
+    // console.log("Login submitted:", form);
   }
 }
 </script>

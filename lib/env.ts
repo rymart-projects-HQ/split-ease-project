@@ -6,7 +6,10 @@ const EnvSchema = z.object({
   NODE_ENV: z.string(),
   DATABASE_URL: z.string(),
   DATABASE_NAME: z.string(),
-  DATBASE_PASSWORD: z.string(),
+  DATABASE_PASSWORD: z.string(),
+  SUPABASE_URL: z.string(),
+  SUPABASE_ANON_KEY: z.string(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string(),
 
 });
 
