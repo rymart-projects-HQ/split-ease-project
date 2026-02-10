@@ -15,7 +15,7 @@ export default withNuxt(antfu({
     semi: true,
     quotes: "double",
   },
-  ignores: [".npm-store/**", "**/migrations/*", ".claude/**", "./server/utils/prisma.ts"],
+  ignores: [".npm-store/**", "**/migrations/*", ".claude/**", "./server/utils/prisma.ts", "app/layouts/README.md", "app/pages/README.md"],
 }, {
   rules: {
     "vue/max-attributes-per-line": ["error", {
@@ -48,5 +48,12 @@ export default withNuxt(antfu({
   files: ["server/utils/prisma.ts"],
   rules: {
     "no-var": "off",
+  },
+}, {
+  files: ["**/*.md"],
+  rules: {
+    "style/no-multiple-empty-lines": "off",
+    "style/eol-last": "off",
+    "format/prettier": "off",
   },
 }));
