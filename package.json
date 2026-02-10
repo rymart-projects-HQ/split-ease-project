@@ -10,7 +10,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prismagenerate": "npx prisma generate"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.12.1",
