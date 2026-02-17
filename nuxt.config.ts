@@ -7,7 +7,7 @@ import "./lib/env";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxtjs/color-mode"],
+  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxtjs/color-mode", "nuxt-api-shield"],
   eslint: {
     config: {
       standalone: false,
@@ -31,5 +31,37 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   colorMode: {
     dataValue: "theme",
+  },
+  nuxtApiShield: {
+    limit: {
+      max: 100,
+      duration: 60,
+      ban: 900,
+    },
+    delayOnBan: true,
+    errorMessage: "Too Many Requests",
+    retryAfterHeader: true,
+    routes: [
+      {
+        path: "/api/auth/login",
+        max: 5, // 15 minutes
+        duration: 10,
+      },
+      {
+        path: "/api/auth/signup",
+        max: 5, // 15 minutes
+        duration: 10,
+      },
+      {
+        path: "/api/auth/me",
+        max: 5, // 15 minutes
+        duration: 10,
+      },
+      {
+        path: "/api/auth/logout",
+        max: 5, // 15 minutes
+        duration: 10,
+      },
+    ],
   },
 });
