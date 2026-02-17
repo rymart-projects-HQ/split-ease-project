@@ -14,24 +14,24 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Supabase validates credentials and returns session
-    const { data, error } = await serverSupabaseClient.auth.signInWithPassword({
+    const { data: authData, error: authError } = await serverSupabaseClient.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error)
-      throw error;
-    if (!data.user)
+    if (authError)
+      throw authError;
+    if (!authData.user)
       throw new Error("Login failed");
 
     // Return user and session
     return {
       success: true,
       user: {
-        id: data.user.id,
-        email: data.user.email,
+        id: authData.user.id,
+        email: authData.user.email,
       },
-      session: data.session,
+      session: authData.session,
     };
   }
   catch (error: any) {
