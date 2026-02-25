@@ -8,7 +8,9 @@ A modern expense splitting application built with Nuxt 3, Supabase, and Prisma.
 - **Backend**: Nuxt Server API, Supabase Auth
 - **Database**: PostgreSQL (Supabase), Prisma ORM
 - **Authentication**: Supabase Auth
+- **State Management**: Pinia
 - **Validation**: Zod
+- **Rate Limiting**: nuxt-api-shield
 - **Linting**: ESLint with @antfu/eslint-config
 - **Git Hooks**: Husky + lint-staged
 
@@ -167,16 +169,66 @@ This project uses Husky and lint-staged to automatically lint files before commi
 - Pre-commit: Runs `npm run lint` on staged files
 - Ensures code quality standards are maintained
 
+## State Management
+
+This project uses **Pinia** for centralized state management with full TypeScript support.
+
+### Available Stores
+
+- **Auth Store** (`stores/auth.ts`) - User authentication and session management
+- **Expenses Store** (`stores/expenses.ts`) - Expense tracking and CRUD operations
+- **Groups Store** (`stores/groups.ts`) - Group management and member operations
+- **Balances Store** (`stores/balances.ts`) - Balance calculations and settlements
+
+### Usage Example
+
+```typescript
+// In a component
+const authStore = useAuthStore();
+const expensesStore = useExpensesStore();
+
+// Login
+await authStore.login("user@example.com", "password");
+
+// Create expense
+await expensesStore.createExpense({
+  description: "Dinner",
+  amount: 5000, // $50.00 in cents
+  paidById: authStore.user?.id,
+  groupId: "group-123",
+});
+```
+
+See [stores/README.md](stores/README.md) for detailed documentation.
+
+## Rate Limiting
+
+The API is protected with **nuxt-api-shield** for rate limiting:
+
+- **Global limit**: 100 requests per 60 seconds
+- **Auth endpoints**: 5 requests per 10 seconds (signup, login)
+- **Ban duration**: 900 seconds (15 minutes) for excessive requests
+
+Test rate limiting with multiple rapid requests to see it in action.
+
 ## API Endpoints
 
 ### Authentication
 
-- `POST /api/signup` - User registration
+- `POST /api/auth/signup` - User registration
   - Creates Supabase auth user
   - Creates user profile in database
   - Request body: `{ email, password, name? }`
+  - Rate limit: 5 requests per 10 seconds
+
+- `POST /api/auth/login` - User login
+  - Authenticates with Supabase
+  - Rate limit: 5 requests per 10 seconds
 
 ### Testing
+
+- `GET /api/health` - Health check endpoint
+  - Returns server status and timestamp
 
 - `GET /api/test-supabase` - Test Supabase connection
   - Lists all users from Supabase Auth
@@ -187,32 +239,49 @@ This project uses Husky and lint-staged to automatically lint files before commi
 ```
 split-ease-project/
 ├── app/
-│   └── composables/
-│       └── useSupabaseClient.ts    # Client-side Supabase client
+│   ├── components/                # Vue components
+│   ├── composables/
+│   │   └── useSupabaseClient.ts  # Client-side Supabase client
+│   ├── layouts/                   # App layouts (default, app)
+│   ├── pages/                     # File-based routing
+│   └── types/                     # TypeScript types
 ├── server/
 │   ├── api/
-│   │   ├── signup.post.ts         # User registration endpoint
-│   │   └── test-supabase.get.ts   # Connection test endpoint
+│   │   ├── auth/
+│   │   │   ├── signup.post.ts    # User registration endpoint
+│   │   │   └── login.post.ts     # User login endpoint
+│   │   ├── health.get.ts         # Health check
+│   │   └── test-supabase.get.ts  # Connection test
 │   └── utils/
-│       └── prisma.ts              # Prisma client singleton
+│       └── prisma.ts             # Prisma client singleton
+├── stores/
+│   ├── auth.ts                   # Authentication store
+│   ├── expenses.ts               # Expense management store
+│   ├── groups.ts                 # Group management store
+│   ├── balances.ts               # Balance calculation store
+│   └── README.md                 # Store documentation
 ├── lib/
-│   ├── env.ts                     # Environment variable schema & validation
-│   └── try-parse-env.ts           # Zod validation helper
+│   ├── env.ts                    # Environment variable schema
+│   └── try-parse-env.ts          # Zod validation helper
 ├── prisma/
-│   └── schema.prisma              # Database schema
+│   ├── schema.prisma             # Database schema
+│   └── migrations/               # Database migrations
 ├── utils/
-│   └── supabase.ts                # Server-side Supabase client
-└── .env                           # Environment variables (not in git)
+│   └── supabase.ts               # Server-side Supabase client
+└── .env                          # Environment variables (not in git)
 ```
 
 ## Key Features
 
 - **Type-safe environment variables** with Zod validation
 - **Dual authentication system** (Supabase Auth + Prisma database)
+- **Pinia state management** with Composition API setup pattern
+- **Rate limiting** with nuxt-api-shield for API protection
 - **Server-side API routes** for secure operations
 - **Prisma ORM** for type-safe database queries
 - **Modern Nuxt 4** with Vue 3 Composition API
 - **Tailwind CSS 4** with DaisyUI components
+- **Comprehensive documentation** for all major components
 
 ## Production
 

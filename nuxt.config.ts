@@ -7,7 +7,7 @@ import "./lib/env";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxtjs/color-mode", "nuxt-api-shield"],
+  modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxtjs/color-mode", "nuxt-api-shield", "@pinia/nuxt"],
   eslint: {
     config: {
       standalone: false,
@@ -59,6 +59,11 @@ export default defineNuxtConfig({
       },
       {
         path: "/api/auth/logout",
+        max: 5, // 15 minutes
+        duration: 10,
+      },
+      {
+        path: "/api/test-supabase",
         max: 5, // 15 minutes
         duration: 10,
       },

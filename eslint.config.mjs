@@ -56,4 +56,9 @@ export default withNuxt(antfu({
     "style/eol-last": "off",
     "format/prettier": "off",
   },
+}, {
+  files: ["**/*.md/**"],
+  rules: {
+    "no-console": "off",
+  },
 }));
